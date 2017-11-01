@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Ban extends Command {
-    private String[] usages = { "ban @user [reason] | [time] - bans the user with specific arguments. Both arguments can be omitted" };
+    private String[] usages = { "ban @user [reason] | [time] - This command bans a user.  You may omit the reason and or time. };
 
     @Override
     public String[] getUsages() {
@@ -40,7 +40,7 @@ public class Ban extends Command {
         Member selfMember = guild.getSelfMember();
 
         if (!member.hasPermission(Permission.BAN_MEMBERS)) {
-            DiscordUtils.failMessage(bot, message, "You don't have enough permissions to execute this command!");
+            DiscordUtils.failMessage(bot, message, "You do not have permission to do this command!");
             return false;
         }
 
@@ -56,17 +56,17 @@ public class Ban extends Command {
         GuildController controller = guild.getController();
 
         if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
-            DiscordUtils.failMessage(bot, message, "I don't have enough permissions to do that!");
+            DiscordUtils.failMessage(bot, message, "I do not have permission to do this command!");
             return false;
         }
 
         if (user.getId().equals(banUser.getId())) {
-            DiscordUtils.failMessage(bot, message, "You can't ban yourself, dummy!");
+            DiscordUtils.failMessage(bot, message, "You do not have permission to do this command!");
             return false;
         }
 
         if (!DiscordUtils.isBannable(banMember, selfMember)) {
-            DiscordUtils.failMessage(bot, message, "I don't have enough permissions to do that!");
+            DiscordUtils.failMessage(bot, message, "I do not have permission to do this command!");
             return false;
         }
 
@@ -75,11 +75,11 @@ public class Ban extends Command {
         try {
             parsedReasonAndTime = TextUtils.getTextAndTime(messageIterator);
         } catch (TextUtils.InvalidTimeInputException e) {
-            DiscordUtils.failMessage(bot, message, "Invalid time argument. Please try again.");
+            DiscordUtils.failMessage(bot, message, "The time selected is invalid, please enter a valid time.");
             return false;
         } catch (TextUtils.TimeInputInPastException e) {
-            DiscordUtils.failMessage(bot, message, "Your time argument was set for the past. Try again.\n" +
-                                                               "If you're specifying a date, e.g. `30 December`, make sure you also write the year.");
+            DiscordUtils.failMessage(bot, message, "Time selected is in the past, please select a time in the future.\n" +
+                                                               "If you're specifying a date, make sure you also write the year.");
             return false;
         }
 
@@ -131,7 +131,7 @@ public class Ban extends Command {
             DiscordUtils.createModLogEntry(bot, shard, message, banMember, reason, "ban", banId, expirationDate, true);
             DiscordUtils.sendMessage(channel, "Banned " + DiscordUtils.getUserTagAndId(banUser));
         } catch (Exception e) {
-            DiscordUtils.failMessage(bot, message, "Could not ban the specified user. Do I have enough permissions?");
+            DiscordUtils.failMessage(bot, message, "I do not have permission to do this command!");
         }
 
         return false;
